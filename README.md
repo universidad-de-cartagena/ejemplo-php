@@ -13,3 +13,13 @@
 ## Links utiles
 
 - [Estructura de carpetas](https://laravel.com/docs/5.8/structure)
+
+## Docker
+
+```shell
+FROM php:7.2-cli
+RUN docker-php-source extract \
+    && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-enable pdo_mysql \
+    && docker-php-source delete
+```
