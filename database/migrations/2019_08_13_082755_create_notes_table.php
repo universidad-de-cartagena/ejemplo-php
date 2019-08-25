@@ -19,7 +19,7 @@ class CreateNotesTable extends Migration
             $table->char('author', 32)->nullable($value = false);
             $table->char('title', 32)->nullable($value = false);
             $table->text('body')->nullable($value = false);
-            $table->timestampsTz();
+            $table->dateTimeTz('created_at');
         });
     }
 

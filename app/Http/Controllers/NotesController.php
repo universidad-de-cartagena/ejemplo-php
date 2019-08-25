@@ -21,7 +21,11 @@ class NotesController extends Controller
 
     public function show(Request $request, string $uuid)
     {
-        return BusinessLogic::getNote($uuid);
+        try {
+            return BusinessLogic::getNote($uuid);
+        } catch (\Throwable $th) {
+            return MessagesUtil::error_message('No note was found with UUID: ' . $uuid, 404);
+        }
     }
 
     public function create(Request $request)
@@ -41,7 +45,7 @@ class NotesController extends Controller
         try {
             BusinessLogic::deleteNote($uuid);
         } catch (Throwable $th) {
-            return MessagesUtil::error_message('No note was found with UUID:' . $uuid, 404);
+            return MessagesUtil::error_message('No note was found with UUID: ' . $uuid, 404);
         }
         return response()->json([
             'message' => 'Note with UUID: ' . $uuid . ' has been deleted'

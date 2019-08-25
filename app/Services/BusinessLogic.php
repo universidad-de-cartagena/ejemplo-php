@@ -31,6 +31,9 @@ class BusinessLogic
     public static function getNote(string $uuid)
     {
         $db_result = Note::where('uuid', $uuid)->first();
+        if ($db_result == null) {
+            throw new Exception('getNote could not find a note with uuid: ' . $uuid);
+        }
         return BusinessLogic::formatNoteForUi($db_result);
     }
     public static function createNote(string $title, string $author, string $body)
@@ -38,7 +41,8 @@ class BusinessLogic
         $note = Note::create([
             'title' => $title,
             'author' => $author,
-            'body' => $body
+            'body' => $body,
+            'created_at' => new DateTime('now', new DateTimeZone('UTC'))
         ]);
         return BusinessLogic::formatNoteForUi($note);
     }

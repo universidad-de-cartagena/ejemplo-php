@@ -12,14 +12,14 @@ class Note extends Model
      * By default laravel expects created_at and updated_at columns to exists
      * in the database table, uncomment the next line to disable this behaviour.
      */
-    // public $timestamps = false;
+    public $timestamps = false;
 
     /**
      * Fields inside this property can be assigned using Eloquent methods:
      *   - create()
      *   - update()
      */
-    protected $fillable = ['author', 'title', 'body'];
+    protected $fillable = ['author', 'title', 'body', 'created_at'];
 
     // Hide fields from array or JSON representation of this model.
     protected $hidden = ['id'];
@@ -27,7 +27,7 @@ class Note extends Model
     /**
      * The attributes that should be mutated to dates.
      */
-    protected $dates = ['updated_at'];
+    protected $dates = ['created_at'];
 
     /**
      * Setup model event hooks
