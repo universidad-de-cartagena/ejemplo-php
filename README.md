@@ -13,8 +13,11 @@
 ## Links utiles
 
 - [Estructura de carpetas](https://laravel.com/docs/5.8/structure)
+- [Buen ejemplo php-fpm en docker](https://github.com/BretFisher/php-docker-good-defaults/blob/master/Dockerfile#L44)
 
 ## Docker
+
+git clean -xd -e .env -e .vscode/ -e vendor/ -n
 
 ```shell
 FROM php:7.2-cli
@@ -23,3 +26,48 @@ RUN docker-php-source extract \
     && docker-php-ext-enable pdo_mysql \
     && docker-php-source delete
 ```
+
+```shell
+docker run --rm -it -v $PWD:/app -w /app -p 8000:8000 --user 1000:1000 php:7.2-cli bash
+export PS1='php:\w\$ '
+
+docker run --rm -it -v $PWD:/app -w /app --user 1000:1000 composer:1.7.2 bash
+export PS1='composer:\w\$ '
+```
+
+$created_at_datetime = new DateTime("now", new DateTimeZone('UTC'));
+// var_dump($created_at_datetime);
+// var_dump($created_at_datetime->format('Y-m-dTH:i:s.v\Z'));
+// '2019-08-01T00:13:38.599Z'
+
+DB SEEDER
+
+// Create a test in the Feature directory...
+php artisan make:test UserTest
+
+// Create a test in the Unit directory...
+php artisan make:test UserTest --unit
+
+If you define your own setUp / tearDown methods within a test class, be sure to call the respective parent::setUp() / parent::tearDown() methods on the parent class.
+
+https://phpunit.readthedocs.io/en/8.3/writing-tests-for-phpunit.html
+https://phpunit.readthedocs.io/en/8.3/assertions.html
+
+Logging XML, HTML, Coverage
+https://phpunit.readthedocs.io/en/8.3/logging.html#test-results-xml
+
+Coverage
+https://phpunit.readthedocs.io/en/8.3/code-coverage-analysis.html
+https://phpunit.readthedocs.io/en/8.3/textui.html#command-line-options
+https://phpunit.readthedocs.io/en/8.3/configuration.html#the-logging-element
+
+Database
+https://phpunit.de/manual/6.5/en/database.html
+
+Some managed database providers such as Heroku provide a single database "URL" that contains all of the connection information for the database in a single string. An example database URL may look something like the following:
+
+mysql://root:password@127.0.0.1/forge?charset=UTF-8
+These URLs typically follow a standard schema convention:
+
+driver://username:password@host:port/database?options
+For convenience, Laravel supports these URLs as an alternative to configuring your database with multiple configuration options. If the url (or corresponding DATABASE_URL environment variable) configuration option is present, it will be used to extract the database connection and credential information.

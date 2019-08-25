@@ -17,29 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-use App\Note;
-
-Route::get('note', function() {
-    return Note::all();
-});
-
-// Route::get('note/{uuid}', function($uuid) {
-//     return Article::find($uuid);
-// });
-
-Route::post('note', function(Request $request) {
-    return Article::create($request->all);
-});
-
-// Route::put('note/{id}', function(Request $request, $id) {
-//     $article = Article::findOrFail($id);
-//     $article->update($request->all());
-
-//     return $article;
-// });
-
-// Route::delete('note/{id}', function($id) {
-//     Article::find($id)->delete();
-
-//     return 204;
-// })
+Route::get('notes', 'NotesController@index');
+Route::get('notes/{uuid}', 'NotesController@show');
+Route::post('notes', 'NotesController@create');
+Route::delete('notes/{uuid}', 'NotesController@delete');

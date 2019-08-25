@@ -15,11 +15,11 @@ class CreateNotesTable extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('uuid');
-            $table->char('author', 32);
-            $table->char('title', 32);
-            $table->text('body');
-            $table->dateTimeTz('created_at');
+            $table->uuid('uuid')->nullable($value = false);
+            $table->char('author', 32)->nullable($value = false);
+            $table->char('title', 32)->nullable($value = false);
+            $table->text('body')->nullable($value = false);
+            $table->timestampsTz();
         });
     }
 
