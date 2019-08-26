@@ -52,6 +52,7 @@ If you define your own setUp / tearDown methods within a test class, be sure to 
 
 https://phpunit.readthedocs.io/en/8.3/writing-tests-for-phpunit.html
 https://phpunit.readthedocs.io/en/8.3/assertions.html
+https://laravel.com/api/5.8/Illuminate/Foundation/Testing/TestResponse.html
 
 Logging XML, HTML, Coverage
 https://phpunit.readthedocs.io/en/8.3/logging.html#test-results-xml
@@ -71,3 +72,5 @@ These URLs typically follow a standard schema convention:
 
 driver://username:password@host:port/database?options
 For convenience, Laravel supports these URLs as an alternative to configuring your database with multiple configuration options. If the url (or corresponding DATABASE_URL environment variable) configuration option is present, it will be used to extract the database connection and credential information.
+
+vendor/bin/phpunit --log-junit tests.xml

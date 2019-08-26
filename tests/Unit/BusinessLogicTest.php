@@ -17,7 +17,6 @@ class BusinessLogicTest extends TestCase
     use DatabaseMigrations;
 
     /**
-     * This tells PHPUnit not to care about this function
      * @doesNotPerformAssertions
      **/
     private function get_datetime_from_string(string $date): DateTime
@@ -39,7 +38,27 @@ class BusinessLogicTest extends TestCase
         return $result;
     }
 
-    public function x_empty_array_of_notes()
+    /**
+     * @doesNotPerformAssertions
+     **/
+    private function assertNoteContent(array $expected, array $value)
+    {
+        $this->assertEquals($expected['title'], $value['title']);
+        $this->assertEquals($expected['author'], $value['author']);
+        $this->assertEquals($expected['body'], $value['body']);
+        $this->assertGreaterThanOrEqual(
+            $this->get_datetime_from_string($value['created_at']),
+            $expected['created_at']
+        );
+        // Check UUID https://github.com/ramsey/uuid/issues/178#issuecomment-323606470
+        // UUID_TYPE_RANDOM = 4
+        $this->assertEquals(
+            Uuid::fromString($value['uuid'])->getVersion(),
+            Uuid::UUID_TYPE_RANDOM
+        );
+    }
+
+    public function test_empty_array_of_notes()
     {
         /**
          * When starting the program, an empty array should be returned 
@@ -67,35 +86,23 @@ class BusinessLogicTest extends TestCase
         $result = BusinessLogic::listNotes();
         $this->assertIsArray($result);
         $this->assertEquals(sizeof($result), 1);
-        $this->assertEquals($expected_result['title'], $inserted_note['title']);
-        $this->assertEquals($expected_result['author'], $inserted_note['author']);
-        $this->assertEquals($expected_result['body'], $inserted_note['body']);
-        $this->assertGreaterThanOrEqual(
-            $this->get_datetime_from_string($inserted_note['created_at']),
-            $expected_result['created_at']
-        );
-        $this->assertEquals(
-            Uuid::fromString($inserted_note['uuid'])->getVersion(),
-            Uuid::UUID_TYPE_RANDOM
-        );
+        $this->assertNoteContent($expected_result, $inserted_note);
     }
 
-    /**
-     * @doesNotPerformAssertions
-     **/
-    public function x_array_of_2_notes()
+    public function test_array_of_2_notes()
     {
-        $utc_time_zone = new DateTimeZone('UTC');
         $expected_result = [
             [
                 'title' => 'Mi genial nota',
                 'author' => 'Amaury Pruebas',
-                'body' => 'Unit testing'
+                'body' => 'Unit testing',
+                'created_at' => new DateTime('now', new DateTimeZone('utc'))
             ],
             [
                 'title' => 'Mi genial nota 2',
                 'author' => 'Amaury Pruebas 2',
-                'body' => 'Unit testing x2'
+                'body' => 'Unit testing x2',
+                'created_at' => new DateTime('now', new DateTimeZone('utc'))
             ]
         ];
         foreach ($expected_result as $note) {
@@ -104,20 +111,35 @@ class BusinessLogicTest extends TestCase
                 $author = $note['author'],
                 $body = $note['body']
             );
-            $this->assertEquals($note['title'], $inserted_note['title']);
-            $this->assertEquals($note['author'], $inserted_note['author']);
-            $this->assertEquals($note['body'], $inserted_note['body']);
-            // Check UUID https://github.com/ramsey/uuid/issues/178#issuecomment-323606470
-            // UUID_TYPE_RANDOM = 4
-            $this->assertEquals(
-                Uuid::fromString($inserted_note['uuid'])->getVersion(),
-                Uuid::UUID_TYPE_RANDOM
-            );
-            $current_time = new DateTime("now", $utc_time_zone);
-            $created_at_datetime = $this->get_datetime_from_string($inserted_note['created_at']);
-            $this->assertLessThanOrEqual($current_time, $created_at_datetime);
+            $this->assertNoteContent($note, $inserted_note);
         }
-        // var_dump(BusinessLogic::listNotes());
-        // $this->assertEquals();
+        $result = BusinessLogic::listNotes();
+        $this->assertIsArray($result);
+        $this->assertEquals(sizeof($result), 2);
+    }
+
+    public function test_delete_note()
+    {
+        $note_to_insert = [
+            'title' => 'Mi genial nota',
+            'author' => 'Amaury Pruebas',
+            'body' => 'Unit testing'
+        ];
+        $result = BusinessLogic::createNote(
+            $title = $note_to_insert['title'],
+            $author = $note_to_insert['author'],
+            $body = $note_to_insert['body']
+        );
+        $this->assertEquals(sizeof(BusinessLogic::listNotes()), 1);
+
+        BusinessLogic::deleteNote($result['uuid']);
+        $this->assertIsArray(BusinessLogic::listNotes());
+        $this->assertEquals(BusinessLogic::listNotes(), []);
+
+        $this->expectExceptionMessage('deleteNote could not delete the note because ORM could not find a note with uuid: ' . $result['uuid']);
+        BusinessLogic::deleteNote($result['uuid']);
+
+        $this->expectExceptionMessage('getNote could not find a note with uuid: ' . $result['uuid']);
+        BusinessLogic::getNote($result['uuid']);
     }
 }

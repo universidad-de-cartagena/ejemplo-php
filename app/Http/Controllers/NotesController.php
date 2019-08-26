@@ -13,9 +13,6 @@ class NotesController extends Controller
 
     public function index(Request $request)
     {
-        // if (!$request->expectsJson()) {
-        //     return MessagesUtil::error_message("We only reply JSON");
-        // }
         return response()->json(BusinessLogic::listNotes(), 200, [], NotesController::$default_json_encode_options);
     }
 
@@ -30,9 +27,6 @@ class NotesController extends Controller
 
     public function create(Request $request)
     {
-        if (!$request->isJson()) {
-            return MessagesUtil::error_message("Send a json please");
-        }
         return BusinessLogic::createNote(
             $request->input('title'),
             $request->input('author'),

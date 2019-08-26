@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('notes', 'NotesController@index');
 Route::get('notes/{uuid}', 'NotesController@show');
 Route::post('notes', 'NotesController@create');
