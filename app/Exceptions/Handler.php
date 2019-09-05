@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Services\MessagesUtil;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +48,13 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof MethodNotAllowedHttpException) {
+            // HTTP Method fallback
+            return MessagesUtil::error_message(
+                "Use one of the accepted HTTP methods ['GET', 'POST', 'DELETE']",
+                405
+            );
+        }
         return parent::render($request, $exception);
     }
 }

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +15,5 @@ Route::get('notes', 'NotesController@index');
 Route::get('notes/{uuid}', 'NotesController@show');
 Route::post('notes', 'NotesController@create');
 Route::delete('notes/{uuid}', 'NotesController@delete');
+// Fallback when a note wants to be deleted without including an UUID
+Route::delete('notes', 'NotesController@fallback');

@@ -45,4 +45,11 @@ class NotesController extends Controller
             'message' => 'Note with UUID: ' . $uuid . ' has been deleted'
         ], 200);
     }
+
+    public function fallback(Request $request) {
+        return MessagesUtil::error_message(
+            "Provide the UUID of the note that wants to be deleted",
+            400
+        );
+    }
 }

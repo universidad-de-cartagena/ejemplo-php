@@ -46,9 +46,9 @@ class BusinessLogicTest extends TestCase
         $this->assertEquals($expected['title'], $value['title']);
         $this->assertEquals($expected['author'], $value['author']);
         $this->assertEquals($expected['body'], $value['body']);
-        $this->assertGreaterThanOrEqual(
-            $this->get_datetime_from_string($value['created_at']),
-            $expected['created_at']
+        $this->assertLessThanOrEqual(
+            $expected['created_at'],
+            $this->get_datetime_from_string($value['created_at'])
         );
         // Check UUID https://github.com/ramsey/uuid/issues/178#issuecomment-323606470
         // UUID_TYPE_RANDOM = 4
@@ -107,9 +107,9 @@ class BusinessLogicTest extends TestCase
         ];
         foreach ($expected_result as $note) {
             $inserted_note = BusinessLogic::createNote(
-                $title = $note['title'],
-                $author = $note['author'],
-                $body = $note['body']
+                $note['title'],
+                $note['author'],
+                $note['body']
             );
             $this->assertNoteContent($note, $inserted_note);
         }
