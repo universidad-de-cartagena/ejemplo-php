@@ -34,4 +34,4 @@ ENV APP_ENV=local APP_DEBUG=true APP_KEY=base64:Q0hBTkdFX01FX1BMRUFTRQ== DB_CONN
 # Erase previous entrypoint
 ENTRYPOINT [""]
 # Run tests
-CMD /app/vendor/bin/phpunit --log-junit reports/tests.xml --coverage-html reports/html/ --stop-on-fail && chmod -R 777 reports/
+CMD sh -c "/app/vendor/bin/phpunit --log-junit reports/tests.xml --coverage-html reports/html/ --stop-on-fail; chmod -R 777 reports/; exit 0"
