@@ -6,6 +6,8 @@ pipeline {
     stage('Kill everything') {
       steps {
         sh 'docker-compose down -v --remove-orphans || true'
+        sh 'docker container kill $(docker ps -a -q) || true'
+        sh 'docker rmi --force $(docker images -a -q) || true'
         sh 'docker system prune --volumes --force || true'
       }
     }
