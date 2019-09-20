@@ -14,6 +14,7 @@ echo $PREFIX "Waiting for db"
 
 echo
 echo $PREFIX "Running migrations on database"
+php artisan config:cache
 php artisan migrate --force
 
 echo
