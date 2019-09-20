@@ -35,13 +35,6 @@ docker run --rm -it -v $PWD:/app -w /app --user 1000:1000 composer:1.7.2 bash
 export PS1='composer:\w\$ '
 ```
 
-$created_at_datetime = new DateTime("now", new DateTimeZone('UTC'));
-// var_dump($created_at_datetime);
-// var_dump($created_at_datetime->format('Y-m-dTH:i:s.v\Z'));
-// '2019-08-01T00:13:38.599Z'
-
-DB SEEDER
-
 // Create a test in the Feature directory...
 php artisan make:test UserTest
 
@@ -49,10 +42,6 @@ php artisan make:test UserTest
 php artisan make:test UserTest --unit
 
 If you define your own setUp / tearDown methods within a test class, be sure to call the respective parent::setUp() / parent::tearDown() methods on the parent class.
-
-https://phpunit.readthedocs.io/en/8.3/writing-tests-for-phpunit.html
-https://phpunit.readthedocs.io/en/8.3/assertions.html
-https://laravel.com/api/5.8/Illuminate/Foundation/Testing/TestResponse.html
 
 Logging XML, HTML, Coverage
 https://phpunit.readthedocs.io/en/8.3/logging.html#test-results-xml
