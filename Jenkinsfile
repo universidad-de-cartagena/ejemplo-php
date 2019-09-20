@@ -30,7 +30,7 @@ pipeline {
     stage('Tests') {
       steps {
         sh 'docker-compose -f docker-compose.tests.yml up'
-        sh 'sudo chown -R $(id -u):$(id -g) reports/'
+        sh 'id'
         script {
           publishHTML([
             allowMissing: false,
