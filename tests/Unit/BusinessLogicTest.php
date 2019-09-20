@@ -19,37 +19,11 @@ class BusinessLogicTest extends TestCase
     /**
      * @doesNotPerformAssertions
      **/
-    private function get_datetime_from_string(string $date): DateTime
-    {
-        // Example $date = "2019-08-24UTC09:51:04.000Z"
-        $utc_time_zone = new DateTimeZone('UTC');
-        $result = new DateTime('now', $utc_time_zone);
-        $result->setDate(
-            (int) substr($date, 0, 4),
-            (int) substr($date, 5, 2),
-            (int) substr($date, 8, 2)
-        );
-        $result->setTime(
-            (int) substr($date, 13, 2),
-            (int) substr($date, 16, 2),
-            (int) substr($date, 19, 2),
-            (int) substr($date, 22, 3)
-        );
-        return $result;
-    }
-
-    /**
-     * @doesNotPerformAssertions
-     **/
     private function assertNoteContent(array $expected, array $value)
     {
         $this->assertEquals($expected['title'], $value['title']);
         $this->assertEquals($expected['author'], $value['author']);
         $this->assertEquals($expected['body'], $value['body']);
-        $this->assertLessThanOrEqual(
-            $expected['created_at'],
-            $this->get_datetime_from_string($value['created_at'])
-        );
         // Check UUID https://github.com/ramsey/uuid/issues/178#issuecomment-323606470
         // UUID_TYPE_RANDOM = 4
         $this->assertEquals(
