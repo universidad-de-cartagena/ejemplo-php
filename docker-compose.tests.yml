@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   backend:
-    image: ejemplo-php:test
+    image: equipo01-backend-php:test
     build:
       context: .
       dockerfile: Dockerfile.test
