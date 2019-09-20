@@ -22,3 +22,5 @@ bootstrap/cache/config.php
 bootstrap/cache/packages.php
 bootstrap/cache/routes.php
 bootstrap/cache/services.php
+
+Jenkinsfile
