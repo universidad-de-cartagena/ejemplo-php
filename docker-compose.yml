@@ -1,10 +1,9 @@
-version: '3.7'
+version: '3.4'
 
 services:
   backend:
     image: equipo01-backend-php:latest
     build: .
-    init: true
     ports:
       - "8080:8080"
     depends_on:
