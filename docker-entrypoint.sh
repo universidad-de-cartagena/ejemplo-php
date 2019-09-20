@@ -13,12 +13,12 @@ echo $PREFIX "Waiting for db"
 /bin/wait
 
 echo
-echo $PREFIX "Current migrations in database"
-php artisan migrate:status
-
-echo
 echo $PREFIX "Running migrations on database"
 php artisan migrate --force
+
+echo
+echo $PREFIX "Current migrations in database"
+php artisan migrate:status
 
 echo
 echo $PREFIX "Current migrations in database"
