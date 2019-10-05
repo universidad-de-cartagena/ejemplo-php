@@ -65,3 +65,5 @@ For convenience, Laravel supports these URLs as an alternative to configuring yo
 vendor/bin/phpunit --log-junit tests.xml
 
 docker run --rm -it --init -v $PWD:/app:ro -w /app -p 5555:80 node:10.16.3-alpine sh -c "npm install -g xunit-viewer && xunit-viewer --watch --results=tests.xml --port=80"
+
+[Add cors](https://github.com/barryvdh/laravel-cors)
