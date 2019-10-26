@@ -1,18 +1,24 @@
 FROM composer:1.7.2 as dependencies
 WORKDIR /app
+
+# Dependencies definitions
 COPY composer.json composer.lock ./
+# Code is required to complete PHP autoloader
 COPY . .
+
 # Ignoring platform requirements because if not disabled, composer checks for php
 # extension packages in the system which will be installed in the final stage
 RUN composer validate \
     && composer install \
-        --no-dev --no-scripts --optimize-autoloader \
+        --no-dev \
+        --no-scripts --optimize-autoloader \
         --ignore-platform-reqs --no-interaction --no-progress --ansi 
 
+# Bases for production image
 FROM php:7.2-cli
 WORKDIR /app
 
-# Dependency files
+# Production dependency files
 COPY --from=dependencies /app/vendor/ vendor/
 COPY --from=dependencies /app/composer.json /app/composer.lock ./
 
@@ -21,6 +27,8 @@ RUN docker-php-source extract \
     && docker-php-ext-install pdo_mysql \
     && docker-php-ext-enable pdo_mysql \
     && docker-php-source delete
+
+# Source code
 COPY . .
 
 # Laravel optimizations
@@ -43,5 +51,5 @@ RUN chmod +x /bin/wait
 COPY docker-entrypoint.sh /bin
 RUN chmod a+x /bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
-
+EXPOSE 8080
 CMD php artisan serve --host 0.0.0.0 --port 8080

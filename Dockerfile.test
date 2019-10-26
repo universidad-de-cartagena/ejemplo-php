@@ -1,8 +1,11 @@
 FROM composer:1.7.2 as dependencies
 WORKDIR /app
 
+# Dependencies definitions
 COPY composer.json composer.lock ./
+# Code is required to complete PHP autoloader
 COPY . .
+
 # Ignoring platform requirements because if not disabled, composer checks for php
 # extension packages in the system which will be installed in the final stage
 RUN composer validate \
@@ -10,28 +13,36 @@ RUN composer validate \
         --no-scripts --optimize-autoloader \
         --ignore-platform-reqs --no-interaction --no-progress --ansi 
 
-FROM equipo01-backend-php:latest
-
-RUN apt-get update -y \
-      && apt-get install -y --no-install-recommends git zip unzip libzip-dev libsqlite3-dev \
-      && docker-php-source extract \
-      && docker-php-ext-install zip pdo_sqlite \
-      && docker-php-ext-enable zip pdo_sqlite \
-      && docker-php-source delete
-
+# Bases for testing image
+FROM php:7.2-cli
 WORKDIR /app
-# Dependency files
+
+# PHP runtime extensions and tools for testing
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends git zip unzip libzip-dev libsqlite3-dev \
+    && docker-php-source extract \
+    && docker-php-ext-install zip pdo_sqlite \
+    && docker-php-ext-enable zip pdo_sqlite \
+    && docker-php-source delete
+
+# Testing dependency files
 COPY --from=dependencies /app/vendor/ vendor/
 COPY --from=dependencies /app/composer.json /app/composer.lock ./
 
+# Code is required to complete PHP autoloader
+COPY . .
+
+# Testing database
 RUN touch database/database.sqlite \
-      && php artisan optimize:clear
+    && php artisan optimize:clear
 
-# Re-do runtime configuration
-ENV DATABASE_URL= WAIT_HOSTS=
-ENV APP_ENV=local APP_DEBUG=true APP_KEY=base64:Q0hBTkdFX01FX1BMRUFTRQ== DB_CONNECTION=sqlite
+# Default runtime configuration
+ENV APP_ENV=local APP_DEBUG=true \
+    APP_KEY=base64:Q0hBTkdFX01FX1BMRUFTRQ== \
+    DB_CONNECTION=sqlite \
+    TEST_UID=1000 TEST_GID=1000
 
-# Erase previous entrypoint
-ENTRYPOINT [""]
-# Run tests
-CMD sh -c "/app/vendor/bin/phpunit --log-junit reports/tests.xml --stop-on-fail; chmod -R 777 reports/; exit 0"
+# Convenient entrypoint script
+COPY docker-entrypoint.test.sh /bin
+RUN chmod a+x /bin/docker-entrypoint.test.sh
+CMD "docker-entrypoint.test.sh"

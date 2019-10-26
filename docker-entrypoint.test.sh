@@ -9,10 +9,6 @@ set -euo pipefail
 PREFIX="[*]"
 
 echo
-echo $PREFIX "Waiting for db"
-/bin/wait
-
-echo
 echo $PREFIX "Running migrations on database"
 php artisan config:cache
 php artisan migrate --force
@@ -21,10 +17,14 @@ echo
 echo $PREFIX "Current migrations in database"
 php artisan migrate:status
 
-if [ "$APP_DEBUG" = "true" -a "$APP_ENV" = "local" ]; then
-    echo
-    echo $PREFIX "Routes"
-    php artisan route:list
-fi
+echo
+echo $PREFIX "Routes"
+php artisan route:list
 
-exec "$@"
+echo
+echo $PREFIX "Running tests"
+./vendor/bin/phpunit --log-junit reports/tests.xml --stop-on-fail
+
+echo
+echo $PREFIX "Restoring user permissions"
+chown -R $TEST_UID:$TEST_GID .
