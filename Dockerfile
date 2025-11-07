@@ -1,4 +1,4 @@
-FROM composer:1.7.2 as dependencies
+FROM docker.io/composer:1.7.2 as dependencies
 WORKDIR /app
 
 # Dependencies definitions
@@ -15,7 +15,7 @@ RUN composer validate \
         --ignore-platform-reqs --no-interaction --no-progress --ansi 
 
 # Bases for production image
-FROM php:7.2-cli
+FROM docker.io/php:7.2-cli
 WORKDIR /app
 
 # Production dependency files
