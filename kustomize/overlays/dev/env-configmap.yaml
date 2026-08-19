@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ejemplo-php-env
+data:
+  ENVIRONMENT: "dev"
+  APP_ENV: "local"
+  APP_DEBUG: "true"
+  LOG_LEVEL: "debug"
+  WAIT_HOSTS: "database:3306"

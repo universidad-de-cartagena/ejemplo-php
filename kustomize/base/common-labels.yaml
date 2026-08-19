@@ -1,0 +1,5 @@
+app.kubernetes.io/name: ejemplo-php
+app.kubernetes.io/part-of: ejemplo-apps
+app.kubernetes.io/managed-by: kustomize
+team: plataforma
+cost-center: eng-001

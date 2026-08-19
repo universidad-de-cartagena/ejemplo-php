@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: ejemplo-php
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: ejemplo-php
