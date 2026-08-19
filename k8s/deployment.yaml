@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ejemplo-php
+  labels:
+    app: ejemplo-php
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ejemplo-php
+  template:
+    metadata:
+      labels:
+        app: ejemplo-php
+    spec:
+      containers:
+        - name: ejemplo-php
+          image: registry.gitlab.com/amauryortega/ejemplo-php:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: ejemplo-php-config
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi

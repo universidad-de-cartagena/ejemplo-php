@@ -1,0 +1,8 @@
+apiVersion: v2
+name: ejemplo-php
+description: Helm chart for ejemplo-php Laravel application
+type: application
+version: 0.1.0
+appVersion: "8.2"
+maintainers:
+  - name: amauryortega
