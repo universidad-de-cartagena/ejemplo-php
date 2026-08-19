@@ -1,0 +1,79 @@
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+
+variables:
+  IMAGE_TAG: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
+  IMAGE_LATEST: ${CI_REGISTRY_IMAGE}:latest
+
+lint:
+  stage: lint
+  image: alpine:3.19
+  before_script:
+    - apk add --no-cache python3 py3-pip
+    - pip3 install --break-system-packages yamllint
+  script:
+    - yamllint -d relaxed .gitlab-ci.yml
+    - yamllint -d relaxed helm/ejemplo-php/values.yaml
+    - yamllint -d relaxed helm/ejemplo-php/Chart.yaml
+    - yamllint -d relaxed k8s/*.yaml
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+helm-lint:
+  stage: lint
+  image: alpine/helm:3.14
+  script:
+    - helm lint helm/ejemplo-php/
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+build:
+  stage: build
+  image: gcr.io/kaniko-project/executor:v1.21.0-debug
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context ${CI_PROJECT_DIR} --dockerfile ${CI_PROJECT_DIR}/Dockerfile --destination ${IMAGE_TAG} --destination ${IMAGE_LATEST} --cache=true
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+test:
+  stage: test
+  image: php:8.2-cli
+  before_script:
+    - docker-php-ext-install pdo_mysql
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer install --no-interaction --no-progress
+  script:
+    - php vendor/bin/phpunit --testdox
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+deploy-staging:
+  stage: deploy
+  image: alpine/helm:3.14
+  script:
+    - helm upgrade --install ejemplo-php-staging helm/ejemplo-php/ --namespace staging --set image.repository=${CI_REGISTRY_IMAGE} --set image.tag=${CI_COMMIT_SHORT_SHA} --wait --timeout 5m
+  environment:
+    name: staging
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  when: manual
+
+deploy-production:
+  stage: deploy
+  image: alpine/helm:3.14
+  script:
+    - helm upgrade --install ejemplo-php-production helm/ejemplo-php/ --namespace production --set image.repository=${CI_REGISTRY_IMAGE} --set image.tag=${CI_COMMIT_SHORT_SHA} --wait --timeout 5m
+  environment:
+    name: production
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  when: manual

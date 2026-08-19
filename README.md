@@ -20,7 +20,7 @@
 git clean -xd -e .env -e .vscode/ -e vendor/ -n
 
 ```shell
-FROM php:7.2-cli
+FROM php:8.2-cli
 RUN docker-php-source extract \
     && docker-php-ext-install pdo_mysql \
     && docker-php-ext-enable pdo_mysql \
@@ -28,7 +28,7 @@ RUN docker-php-source extract \
 ```
 
 ```shell
-docker run --rm -it -v $PWD:/app -w /app -p 8000:8000 --user 1000:1000 php:7.2-cli bash
+docker run --rm -it -v $PWD:/app -w /app -p 8000:8000 --user 1000:1000 php:8.2-cli bash
 export PS1='php:\w\$ '
 
 docker run --rm -it -v $PWD:/app -w /app --user 1000:1000 composer:1.7.2 bash

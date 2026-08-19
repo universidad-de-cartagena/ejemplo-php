@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ejemplo-php-config
+  labels:
+    app: ejemplo-php
+data:
+  APP_ENV: "production"
+  APP_DEBUG: "false"
+  WAIT_HOSTS: "database:3306"
