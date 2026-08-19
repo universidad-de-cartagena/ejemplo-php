@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if (getenv('OTEL_ENABLED') === 'true') {
+            require_once __DIR__ . '/../../observability/otel-config.php';
+            setupOpenTelemetry();
+        }
     }
 }

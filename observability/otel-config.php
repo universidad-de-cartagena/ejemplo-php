@@ -9,16 +9,12 @@
  * Or add to bootstrap/app.php before app creation.
  */
 
-use OpenTelemetry\API\Globals;
-use OpenTelemetry\API\Instrumentation\Http;
-use OpenTelemetry\Contrib\Otlp\Grpc\SpanExporterFactory;
 use OpenTelemetry\Contrib\Otlp\SpanExporter;
 use OpenTelemetry\SDK\Trace\TracerProvider;
 use OpenTelemetry\SDK\Trace\TracerProviderInterface;
 use OpenTelemetry\SDK\Resource\ResourceInfo;
 use OpenTelemetry\SDK\Resource\ResourceConstants;
 use OpenTelemetry\SDK\Trace\SpanProcessor\BatchSpanProcessor;
-use OpenTelemetry\API\Trace\SpanKind;
 
 if (!function_exists('setupOpenTelemetry')) {
     function setupOpenTelemetry(): TracerProviderInterface
@@ -51,6 +47,9 @@ if (!function_exists('setupOpenTelemetry')) {
 if (!function_exists('getTracer')) {
     function getTracer(string $name = 'ejemplo-php'): \OpenTelemetry\API\Trace\TracerInterface
     {
+        if (!isset($GLOBALS['tracer_provider'])) {
+            throw new \RuntimeException('OpenTelemetry not initialized. Call setupOpenTelemetry() first.');
+        }
         return $GLOBALS['tracer_provider']->getTracer($name);
     }
 }

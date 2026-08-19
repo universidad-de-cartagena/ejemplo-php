@@ -6,16 +6,14 @@ COPY composer.json composer.lock ./
 # Code is required to complete PHP autoloader
 COPY . .
 
-# Ignoring platform requirements because if not disabled, composer checks for php
-# extension packages in the system which will be installed in the final stage
 RUN composer validate \
     && composer install \
         --no-dev \
         --no-scripts --optimize-autoloader \
-        --ignore-platform-reqs --no-interaction --no-progress --ansi 
+        --no-interaction --no-progress --ansi 
 
 # Bases for production image
-FROM docker.io/php:7.2-cli
+FROM docker.io/php:8.2-cli
 WORKDIR /app
 
 # Production dependency files

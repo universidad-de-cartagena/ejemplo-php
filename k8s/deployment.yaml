@@ -23,6 +23,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: ejemplo-php-config
+            - secretRef:
+                name: ejemplo-php-secret
           livenessProbe:
             httpGet:
               path: /

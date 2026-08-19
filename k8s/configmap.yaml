@@ -7,6 +7,4 @@ metadata:
 data:
   APP_ENV: "production"
   APP_DEBUG: "false"
-  APP_KEY: "base64:Q0hBTkdFX01FX1BMRUFTRQ=="
-  DATABASE_URL: "mysql://root:secret@database:3306/backend_laravel"
   WAIT_HOSTS: "database:3306"
